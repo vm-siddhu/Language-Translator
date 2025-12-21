@@ -19,6 +19,7 @@ A full-stack web application for translating English text to Telugu using Node.j
 - **Mongoose** - MongoDB object modeling
 - **Axios** - HTTP client for Google Translate API
 - **Google Translate API** - Translation service (public endpoint)
+- **Simple Auth** - Custom implementation (Plain text passwords)
 
 ### Frontend
 - **React.js** - UI library
@@ -44,13 +45,9 @@ Before you begin, ensure you have the following installed:
    npm install
    ```
    
-   **Important:** Make sure these packages are installed:
-   - bcryptjs (for password hashing)
-   - jsonwebtoken (for authentication)
-   
-   If they're missing, install them:
+   **Important:**
    ```bash
-   npm install bcryptjs jsonwebtoken
+   npm install
    ```
 
 3. **Install frontend dependencies**
@@ -109,6 +106,8 @@ npm run client
 3. Click "Translate to Telugu" button
 4. View the translated text in Telugu
 5. Check the "History" tab to see all previous translations
+
+> **Note:** This project uses simplified authentication for educational purposes. Passwords are stored in plain text and no JWT tokens are used. Old accounts created with hashed passwords will not work.
 
 ## API Endpoints
 

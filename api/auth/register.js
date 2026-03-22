@@ -1,12 +1,6 @@
 const mongoose = require('mongoose');
 const User = require('../../server/models/User');
-
-const dbConnect = async () => {
-  if (mongoose.connections[0].readyState === 1) {
-    return;
-  }
-  await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/translator');
-};
+const { dbConnect } = require('../utils/auth');
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -52,7 +46,7 @@ module.exports = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      token: newUser._id,
+      token: newUser.generateToken(),
       user: {
         id: newUser._id,
         username: newUser.username,

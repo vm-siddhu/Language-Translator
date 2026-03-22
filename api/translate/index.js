@@ -2,23 +2,7 @@ const mongoose = require('mongoose');
 const axios = require('axios');
 const Translation = require('../../server/models/Translation');
 const User = require('../../server/models/User');
-
-const dbConnect = async () => {
-  if (mongoose.connections[0].readyState === 1) {
-    return;
-  }
-  await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/translator');
-};
-
-const verifyToken = async (token) => {
-  try {
-    const user = await User.findById(token);
-    if (!user) return null;
-    return user;
-  } catch (error) {
-    return null;
-  }
-};
+const { dbConnect, verifyToken } = require('../utils/auth');
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -41,8 +25,7 @@ module.exports = async (req, res) => {
   try {
     await dbConnect();
 
-    const token = req.headers.authorization?.split(' ')[1] || req.body.token;
-    const user = await verifyToken(token);
+    const user = await verifyToken(req);
 
     if (!user) {
       return res.status(401).json({ error: 'Unauthorized' });

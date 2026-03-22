@@ -1,12 +1,6 @@
 const mongoose = require('mongoose');
 const User = require('../../server/models/User');
-
-const dbConnect = async () => {
-  if (mongoose.connections[0].readyState === 1) {
-    return;
-  }
-  await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/translator');
-};
+const { dbConnect } = require('../utils/auth');
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -37,17 +31,13 @@ module.exports = async (req, res) => {
 
     const user = await User.findOne({ email });
 
-    if (!user) {
-      return res.status(401).json({ error: 'Invalid credentials' });
-    }
-
-    if (password !== user.password) {
+    if (!user || !(await user.matchPassword(password))) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
     res.status(200).json({
       success: true,
-      token: user._id,
+      token: user.generateToken(),
       user: {
         id: user._id,
         username: user.username,
